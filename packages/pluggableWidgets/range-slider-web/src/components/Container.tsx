@@ -3,10 +3,11 @@ import { RangeSliderContainerProps } from "../../typings/RangeSliderProps";
 import { useNumber } from "../utils/useNumber";
 import { RangeSlider as RangeComponent } from "./RangeSlider";
 import { useOnChangeDebounced } from "../utils/useOnChangeDebounced";
-import { createHandleGenerator } from "../utils/createHandleGenerator";
+// import { createHandleGenerator } from "../utils/createHandleGenerator";
 import { useMarks } from "../utils/useMarks";
 import { getStyleProp, isVertical, maxProp, minProp, stepProp } from "../utils/prop-utils";
 import { useScheduleUpdateOnce } from "@mendix/widget-plugin-hooks/useScheduleUpdateOnce";
+import { HandleTooltip } from "./TooltipHandler";
 
 export function Container(props: RangeSliderContainerProps): ReactElement {
     const min = useNumber(minProp(props));
@@ -54,15 +55,15 @@ function InnerContainer(props: InnerContainerProps): ReactElement {
         heightUnit: props.heightUnit
     });
 
-    const handle = createHandleGenerator({
-        tooltipLower: props.tooltipLower,
-        tooltipUpper: props.tooltipUpper,
-        showTooltip: props.showTooltip,
-        tooltipTypeLower: props.tooltipTypeLower,
-        tooltipTypeUpper: props.tooltipTypeUpper,
-        tooltipAlwaysVisible: props.tooltipAlwaysVisible,
-        sliderRef
-    });
+    // const handle = createHandleGenerator({
+    //     tooltipLower: props.tooltipLower,
+    //     tooltipUpper: props.tooltipUpper,
+    //     showTooltip: props.showTooltip,
+    //     tooltipTypeLower: props.tooltipTypeLower,
+    //     tooltipTypeUpper: props.tooltipTypeUpper,
+    //     tooltipAlwaysVisible: props.tooltipAlwaysVisible,
+    //     sliderRef
+    // });
 
     useScheduleUpdateOnce(() => lowerBoundAttribute.status === "available");
 
@@ -78,7 +79,18 @@ function InnerContainer(props: InnerContainerProps): ReactElement {
             marks={marks}
             min={props.min}
             max={props.max}
-            handle={handle}
+            handleRender={(node, handleProps) => {
+                return (
+                    <HandleTooltip
+                        value={handleProps.value}
+                        visible={handleProps.dragging}
+                        sliderRef={sliderRef}
+                        {...props}
+                    >
+                        {node}
+                    </HandleTooltip>
+                );
+            }}
             ref={sliderRef}
         />
     );

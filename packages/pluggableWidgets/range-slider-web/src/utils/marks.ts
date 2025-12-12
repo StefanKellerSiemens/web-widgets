@@ -1,6 +1,6 @@
-export interface Marks {
-    [value: number]: string;
-}
+import { MarkObj } from "@rc-component/slider/lib/Marks";
+
+export type Marks = Record<string | number, React.ReactNode | MarkObj>;
 
 export interface CreateMarksParams {
     numberOfMarks: number;
